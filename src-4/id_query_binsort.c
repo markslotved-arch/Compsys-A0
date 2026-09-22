@@ -20,7 +20,7 @@ struct binsort_data {
     int n;
 };
 
-int comp(const void *a, const void *b) {
+int comp(const void *a, const void *b) { // source: https://www.geeksforgeeks.org/c/qsort-function-in-c/
     const struct binsort_record *x = a;
     const struct binsort_record *y = b;
 
