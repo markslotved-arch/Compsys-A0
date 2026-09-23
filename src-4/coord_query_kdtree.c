@@ -18,20 +18,20 @@ struct kdtree_data {
 };
 
 enum Axis {
-  lon,
-  lat,
+  AXIS_LON,
+  AXIS_LAT,
 };
 
 struct point{
-  int x;
-  int y;
+  double x;
+  double y;
 };
 
 struct Node {
-  struct point;
+  struct point point;
   struct Node *left;
   struct Node *right;
-  enum Axis;
+  enum Axis axis;
 };
 
 int compLon(const void *a, const void *b) {
