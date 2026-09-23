@@ -5,9 +5,11 @@
 #include <stdint.h>
 #include <errno.h>
 #include <assert.h>
+#include <math.h>
+
 #include "record.h"
 #include "coord_query.h"
-#include <math.h>
+
 
 struct naive_data {
   struct record *rs;
