@@ -109,44 +109,6 @@ struct Node* build_kdtree(struct record* rs, int n, int depth) {
   return node;
 }
 
-/*
-
-struct kdtree_data* mk_kdtree(struct record* rs, int n) { //source: https://ssojet.com/data-structures/implement-kd-tree-in-c#building-the-kd-tree
-  struct kdtree_data* data = malloc(sizeof(struct kdtree_data));
-
-    struct Node* build_kdtree(struct point points[], enum Axis lon, enum Axis lat) {
-        if (n <= 0) return NULL;
-
-        int axis = lon % 2;
-        int median_index = n / 2;
-
-        qsort(irs, n, sizeof(struct kdtree_data), compLon);
-
-        
-        // qsort(irs, n, sizeof(struct kdtree_data), compLat);
-    }
-    struct Node* node = create_node(points[median_index]);
-        node->left = build_kdtree(points, median_index, depth + 1);
-        node->right = build_kdtree(points + median_index + 1, n - median_index - 1, depth + 1);
-
-    return node;
-  };
-
-// Procedure kdtree(points, depth)
-// axis ← depth mod d();
-// select median by axis from points;
-// node ← new node;
-// node.point ← median;
-// node.axis ← axis;
-// node.left ← kdtree (points before median, depth+1);
-// node.right ← kdtree (points after median, depth+1);
-// return node
-
-// We let axis = 0 denote longtitude and axis = 1 denote latitude  
-
-*/
-
-
 
 void free_kdtree(struct kdtree_data* data) {
   free(data);
@@ -157,6 +119,7 @@ void free_kdtree(struct kdtree_data* data) {
 
 const struct record* lookup_kdtree(struct kdtree_data *data, double lon, double lat, int depth) {
 struct needleLonLat needle;
+//base case
   if (data -> root == NULL)
     return NULL;
 
@@ -164,22 +127,24 @@ struct needleLonLat needle;
   needle.lon = lon;
 
   struct Node *root = data -> root;
+  //nextbranch er den den af træet vi søger i
   struct Node *nextbranch;
+  //otherbranch er det modsatte sjovt nok
   struct Node *otherbranch;
   struct Node *temp;
   struct Node *best;
-  struct Node nearest(struct Node *root, struct needleLonLat needle, int depth);
+
+  //disse er bare beregningen af distancen på root og på temp
   double root_dist = distance(needle.lat, root->point.y, needle.lon, root->point.x);
   double temp_dist = distance(needle.lat, root->point.y, needle.lon, root->point.x);
   double difference;
  
-  
+  // her vælger vi så om vi kigger lon eller lat, lon hvis depth kan deles med 2 og lat hvis den ikke kan
   if (depth % 2 == 0) {
    if(needle.lon < root->point.x){
       nextbranch = root->left;
       otherbranch = root->right;}
     
-
     else{
       nextbranch = root->right;
       otherbranch = root->left;
@@ -196,9 +161,13 @@ struct needleLonLat needle;
       otherbranch = root->left;
   }
 }
- temp = nearest(nextbranch, needle, depth + 1);
+//her ændre vi vores "root" til at være next branch så vi kan søge vidre
+data->root = nextbranch;
+temp = lookup_kdtree(data, lon, lat, depth + 1);
+//sætter root tilbage til vores root
+data->root = root;
 
-
+// her tjekker vi så distancen på root og temp og så vælger vi den af de 2 som er bedst
 if (temp_dist > root_dist){
   best = temp;
 }
@@ -208,7 +177,7 @@ else{
 
 double radius = distance(needle.lat, best->point.y, needle.lon, best->point.x);
 
-// 4. calculate distance to splitting boundary
+//det her er så det der kdtree noget hvor man ser på linjerne ik og så depending on om vi ser på lon eller lat ved denne depth, vælger vi så lon eller lat
 if (depth % 2 == 0){
   difference = needle.lon - root->point.x;
 }
@@ -216,37 +185,23 @@ else {
   difference = needle.lat - root->point.y;
 }
 
-// 5. maybe search other side
+//her ser vi om vores "best" er god nok, eller om vi skal tjekke den anden del af kdtræet ud!
 if (radius >= (difference)) {
-    temp = nearest(otherbranch, needle, depth + 1);
+  temp = lookup_kdtree(data, lon, lat, depth + 1);
+  data->root = root;
 
     if (temp_dist > root_dist){
-  best = temp;
+      best = temp;
     }
     else{
       best = root;
     }
   }
 
-// 6.
 return best;
   
 
-  // Procedure lookup(closest, query, node)
-  // if node is NULL then
-  // return
-  // else if node.point is closer to query than closest then
-  // replace closest with node.point;
-  // diff ← node.point[node.axis] - query [node.axis];
-  // radius ← the distance between query and closest
-  // if diff ≥ 0 ∨ radius > |diff| then
-  // lookup (closest, query, node.left)
-  // if diff ≤ 0 ∨ radius > |diff| then
-  // lookup (closest, query, node.right)
-
-  // Here we assume that we can index a point with the axis (0 or 1) to obtain
-  // the longtitude or latitude respectively. In code, this likely requires a branch.
-  return NULL;
+  
 }
 
 int main(int argc, char** argv) {
