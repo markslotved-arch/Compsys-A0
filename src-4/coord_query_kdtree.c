@@ -136,7 +136,7 @@ void free_kdtree(struct kdtree_data* data) {
   free(data);
 }
 
-const struct record* lookup_node(struct Node *root, double lon, double lat, int depth) {
+struct Node* lookup_node(struct Node *root, double lon, double lat, int depth) {
   struct needleLonLat needle;
   //base case
   if (root == NULL)
@@ -227,7 +227,7 @@ const struct record* lookup_kdtree(struct kdtree_data *data, double lon, double 
 
 int main(int argc, char** argv) {
   return coord_query_loop(argc, argv,
-                          (mk_index_fn)build_kdtree,
+                          (mk_index_fn)mk_kdtree,
                           (free_index_fn)free_kdtree,
                           (lookup_fn)lookup_kdtree);
 }
