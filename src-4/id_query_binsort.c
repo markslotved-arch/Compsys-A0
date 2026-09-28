@@ -32,6 +32,9 @@ int comp(const void *a, const void *b) { // source: https://www.geeksforgeeks.or
 }
 
 struct binsort_data* mk_binsort(struct record* rs, int n) {
+    if (n <= 0) {
+        return NULL;
+    }
   struct binsort_data* data = malloc(sizeof(struct binsort_data));
     struct binsort_record* irs = malloc(sizeof(struct binsort_record) * n);
 

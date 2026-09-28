@@ -20,6 +20,9 @@ struct indexed_data {
 };
 
 struct indexed_data* mk_indexed(struct record* rs, int n) {
+    if (n <= 0) {
+        return NULL;
+    }
     struct indexed_data* data = malloc(sizeof(struct indexed_data));
 
     data -> irs = malloc (sizeof(struct index_record) * n);
