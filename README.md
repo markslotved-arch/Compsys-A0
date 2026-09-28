@@ -10,7 +10,8 @@ Proceed to type
 From here you simply type the input you want
 
 # How to test
-paste this shell script to test the speed.
+First enter the Testfolder directory
+paste this shell script to test the speed of the coord_query_naive and KDTREE.
 chmod +x speed_test.sh
 ./speed_test.sh
 
