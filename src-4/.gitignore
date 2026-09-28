@@ -3,4 +3,8 @@
 !*.*
 !Makefile
 
+# Allow test folder and shell scripts inside it
+!TestFolder/
+!TestFolder/*.sh
+
 *.o
