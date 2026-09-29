@@ -9,11 +9,15 @@ echo "========================================="
 echo
 
 # Positions in the dataset, NOT counting the header.
-# First, several points through the middle, and last.
 positions=(1 2500 5000 7500 10000 12500 15000 17500 20000)
 
 printf "%-10s %-15s %-15s\n" "Position" "Naive (us)" "KD-tree (us)"
 printf "%-10s %-15s %-15s\n" "--------" "----------" "------------"
+
+# Totals used for calculating averages
+naive_total=0
+kd_total=0
+count=0
 
 for pos in "${positions[@]}"
 do
@@ -43,4 +47,19 @@ do
         sed 's/us//')
 
     printf "%-10s %-15s %-15s\n" "$pos" "$naive_time" "$kd_time"
+
+    # Add lookup times to totals
+    naive_total=$((naive_total + naive_time))
+    kd_total=$((kd_total + kd_time))
+    count=$((count + 1))
 done
+
+# Calculate averages
+naive_average=$(awk "BEGIN {printf \"%.2f\", $naive_total / $count}")
+kd_average=$(awk "BEGIN {printf \"%.2f\", $kd_total / $count}")
+
+echo
+echo "Average lookup time"
+echo "==================="
+printf "%-15s %10s us\n" "Naive:" "$naive_average"
+printf "%-15s %10s us\n" "KD-tree:" "$kd_average"
